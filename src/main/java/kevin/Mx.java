@@ -9,25 +9,22 @@ import kevin.PrometheusApiClient.PMetric;
 
 public class Mx {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     System.out.println(everyoneIsAway());
+    new KMqttService();
+
   }
 
   private static boolean everyoneIsAway() {
     Settings s = Settings.instance();
-    PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress());
-
-    System.out.println(s.getPhoneMacs());
+    PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress(), false);
 
     String interestingMacsPattern = "mac=~\"(" + Joiner.on("|").join(s.getPhoneMacs()) + ")\"";
 
-    //    String query = "absent(wifi_station_signal_dbm{MACS} offset 10m)";
     String query = "absent(wifi_station_signal_dbm{MACS} offset 10m) and absent(wifi_station_signal_dbm{MACS})";
     query = query.replaceAll("MACS", interestingMacsPattern);
 
-    System.out.println(query);
     List<PMetric> res = promClient.doQuery(query);
-    System.out.println(res.size());
     return res.size() > 0;
   }
 

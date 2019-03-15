@@ -22,6 +22,11 @@ compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.7'
 
   compile 'io.prometheus:simpleclient:0.6.0'
   
+
+compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.1'
+
+compile 'org.slf4j:slf4j-simple:1.7.25'
+
   testCompile 'junit:junit:4.12'
 }
 
