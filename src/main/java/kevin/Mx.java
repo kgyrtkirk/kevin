@@ -3,6 +3,7 @@ package kevin;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -11,27 +12,51 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Joiner;
 
 import kevin.PrometheusApiClient.PMetric;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
-public class Mx implements AutoCloseable {
+public class Mx implements Callable<Void> {
+
+  @Option(names = "-r", description = "runContinously")
+  boolean runContinously;
+
+  @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
+  private boolean helpRequested;
+
+  private KMqttService mqttService;
 
   static Logger LOG = LoggerFactory.getLogger(Mx.class);
-  final KMqttService mqttService;
 
   public static void main(String[] args) throws Exception {
-    try (Mx mx = new Mx()) {
-      mx.run();
-    }
-
+    CommandLine.call(new Mx(), args);
   }
 
   @Override
-  public void close() throws Exception {
-    mqttService.close();
+  public Void call() throws Exception {
+
+    try (KMqttService mqttService1 = new KMqttService()) {
+      //FIXME
+      mqttService = mqttService1;
+
+      if (runContinously) {
+        runLoop();
+      } else {
+        Thread.sleep(100);
+        run();
+      }
+    }
+    return null;
+  }
+
+  private void runLoop() throws Exception {
+    while (true) {
+      Thread.sleep(10000);
+      run();
+    }
   }
 
   private void run() throws Exception {
     try {
-      Thread.sleep(100);
       if (needClean()) {
         startMirobo();
       }
@@ -75,15 +100,11 @@ public class Mx implements AutoCloseable {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
     try {
-      CmdExecutor.executeCommandLine(new String[] { "mirobo", "find" }, 1000);
-      //      CmdExecutor.executeCommandLine(new String[] { "mirobo", "clean" }, 1000);
+      //      CmdExecutor.executeCommandLine(new String[] { "mirobo", "find" }, 1000);
+      CmdExecutor.executeCommandLine(new String[] { "mirobo", "clean" }, 1000);
     } catch (TimeoutException te) {
       new TemporalyFailure("mirobo timed out");
     }
-  }
-
-  public Mx() throws Exception {
-    mqttService = new KMqttService();
   }
 
   private boolean everyoneIsAway() throws TemporalyFailure {

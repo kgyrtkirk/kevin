@@ -11,7 +11,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KMqttService {
+public class KMqttService implements AutoCloseable {
 
   Logger LOG = LoggerFactory.getLogger(KMqttService.class);
 
@@ -23,7 +23,7 @@ public class KMqttService {
     mqtt = new MqttClient("tcp://demeter:1883", id);
 
     MqttConnectOptions options = new MqttConnectOptions();
-    options.setAutomaticReconnect(false);
+    options.setAutomaticReconnect(true);
     options.setCleanSession(true);
     options.setConnectionTimeout(10);
     mqtt.connect(options);
@@ -83,6 +83,7 @@ public class KMqttService {
     KMqttService s = new KMqttService();
   }
 
+  @Override
   public void close() throws Exception {
     mqtt.disconnect(1000);
   }
