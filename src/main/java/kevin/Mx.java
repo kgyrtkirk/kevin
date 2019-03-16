@@ -29,6 +29,7 @@ public class Mx implements Callable<Void> {
 
   private KMqttService mqttService;
 
+  private long MIROBO_TIMEOUT = 10000;
   static Logger LOG = LoggerFactory.getLogger(Mx.class);
 
   public static void main(String[] args) throws Exception {
@@ -109,16 +110,20 @@ public class Mx implements Callable<Void> {
   private void startMirobo() throws Exception {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
-    mirobo("clean");
+    int rc = mirobo("start");
+    if (rc != 0) {
+      LOG.error("mirobo return code: " + rc);
+    }
   }
 
-  private void mirobo(String string) throws IOException, InterruptedException {
+  private int mirobo(String string) throws IOException, InterruptedException {
     try {
-      CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, 10000);
+      return CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
     } catch (TimeoutException te) {
       LOG.error("timeout", te);
       new TemporalyFailure("mirobo timed out");
     }
+    throw new RuntimeException("???");
   }
 
   private boolean everyoneIsAway() throws TemporalyFailure {
