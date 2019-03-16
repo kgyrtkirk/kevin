@@ -33,7 +33,7 @@ public class PrometheusApiClient {
     webTarget = webTarget0;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws TemporalyFailure {
     PrometheusApiClient client = new PrometheusApiClient("http://demeter:9090", true);
     String query = "(wifi_station_signal_dbm)";
 
@@ -61,7 +61,7 @@ public class PrometheusApiClient {
     public List<Object[]> values;
   }
 
-  public List<PMetric> doQuery(String query) {
+  public List<PMetric> doQuery(String query) throws TemporalyFailure {
     LOG.debug("query: {}", query);
     PEnvelope response = webTarget
         .path("/api/v1/query")
@@ -71,8 +71,8 @@ public class PrometheusApiClient {
         .readEntity(PEnvelope.class);
 
     LOG.debug("status: {}", response.status);
-    if (response.status != "success") {
-      throw new IllegalStateException();
+    if (!response.status.equals("success")) {
+      throw new TemporalyFailure("prom-status:" + response.status);
     }
     //    System.out.println(response.status);
     //    System.out.println(response.errorType);

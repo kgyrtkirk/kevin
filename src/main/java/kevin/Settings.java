@@ -1,6 +1,7 @@
 package kevin;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +11,10 @@ public class Settings {
 
   private static class DataClass {
     public String prometheusAddress;
-    public String prometheusAddress1;
     public Set<String> phoneMacs;
+    public Long cleanInterval;
+    public Map<String, String> execEnvironment;
+
     //    public JenkinsSettings jenkins = new JenkinsSettings();
     //    public JiraSettings jira = new JiraSettings();
   }
@@ -52,6 +55,14 @@ public class Settings {
 
   public Set<String> getPhoneMacs() {
     return ensureNotNull(dataClass.phoneMacs);
+  }
+
+  public Map<? extends String, ? extends String> getExecEnvironment() {
+    return dataClass.execEnvironment;
+  }
+
+  public long getCleanInterval() {
+    return ensureNotNull(dataClass.cleanInterval);
   }
 
 }

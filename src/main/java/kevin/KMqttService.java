@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,17 @@ public class KMqttService {
 
   public static void main(String[] args) throws Exception {
     KMqttService s = new KMqttService();
+  }
+
+  public void close() throws Exception {
+    mqtt.disconnect(1000);
+  }
+
+  public void publishCleanTime(long time) throws MqttException {
+    MqttMessage msg = new MqttMessage(Long.toString(time).getBytes());
+    msg.setRetained(true);
+    msg.setQos(1);
+    mqtt.publish("mirobo/lastClean", msg);
   }
 
 }
