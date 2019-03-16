@@ -1,6 +1,7 @@
 
 package kevin;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -16,6 +17,9 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 public class Mx implements Callable<Void> {
+
+  @Option(names = "-c", description = "runs some checks")
+  boolean runChecks;
 
   @Option(names = "-r", description = "runContinously")
   boolean runContinously;
@@ -37,6 +41,11 @@ public class Mx implements Callable<Void> {
     try (KMqttService mqttService1 = new KMqttService()) {
       //FIXME
       mqttService = mqttService1;
+
+      if (runChecks) {
+        mirobo("find");
+        return null;
+      }
 
       if (runContinously) {
         runLoop();
@@ -96,12 +105,16 @@ public class Mx implements Callable<Void> {
     return (h >= 8 && h < 20);
   }
 
+  @Deprecated
   private void startMirobo() throws Exception {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
+    mirobo("clean");
+  }
+
+  private void mirobo(String string) throws IOException, InterruptedException {
     try {
-      //      CmdExecutor.executeCommandLine(new String[] { "mirobo", "find" }, 1000);
-      CmdExecutor.executeCommandLine(new String[] { "mirobo", "clean" }, 1000);
+      CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, 1000);
     } catch (TimeoutException te) {
       new TemporalyFailure("mirobo timed out");
     }
