@@ -114,8 +114,9 @@ public class Mx implements Callable<Void> {
 
   private void mirobo(String string) throws IOException, InterruptedException {
     try {
-      CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, 1000);
+      CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, 10000);
     } catch (TimeoutException te) {
+      LOG.error("timeout", te);
       new TemporalyFailure("mirobo timed out");
     }
   }
