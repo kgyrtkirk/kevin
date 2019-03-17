@@ -13,6 +13,8 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
+
 public class PrometheusApiClient {
 
   Logger LOG = LoggerFactory.getLogger(PrometheusApiClient.class);
@@ -34,10 +36,25 @@ public class PrometheusApiClient {
   }
 
   public static void main(String[] args) throws TemporalyFailure {
-    PrometheusApiClient client = new PrometheusApiClient("http://demeter:9090", true);
-    String query = "(wifi_station_signal_dbm)";
+    //    PrometheusApiClient client = new PrometheusApiClient("http://demeter:9090", true);
+    //    String query = "(wifi_station_signal_dbm)";
+    //
+    //    client.doQuery(query);
+    Settings s = Settings.instance();
+    PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress(), false);
 
-    client.doQuery(query);
+    String interestingMacsPattern = "mac=~\"(" + Joiner.on("|").join(s.getPhoneMacs()) + ")\"";
+
+    String query = "absent(count_over_time(wifi_station_signal_dbm{MACS}[3m] offset 385m)) "
+        + "and absent(absent(count_over_time(wifi_station_signal_dbm{MACS}[10m] offset 385m) ))";
+
+    //    String query = "absent(wifi_station_signal_dbm{MACS} offset 10m) and absent(wifi_station_signal_dbm{MACS})";
+    query = query.replaceAll("MACS", interestingMacsPattern);
+
+
+    List<PMetric> res = promClient.doQuery(query);
+    System.out.println(res);
+
   }
 
   static class PEnvelope {
