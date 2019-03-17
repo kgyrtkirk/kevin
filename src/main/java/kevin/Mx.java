@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,9 @@ public class Mx implements Callable<Void> {
       if (needClean()) {
         startMirobo();
       }
+      if (interruptClean()) {
+        sendMiroboHome();
+      }
     } catch (TemporalyFailure e) {
       LOG.info("temporaly problem", e);
     }
@@ -78,6 +82,21 @@ public class Mx implements Callable<Void> {
   private boolean needClean() throws TemporalyFailure {
     return conditionMet(isDayTime(), "dayTime") && conditionMet(cleanedSomeTimeAgo(), "lastClean")
         && conditionMet(everyoneIsAway(), "away") && true;
+  }
+
+  private boolean interruptClean() throws TemporalyFailure {
+    return conditionMet(cleanStartInLastHour(), "cleanLastHour") &&
+        conditionMet(presenceTransitionToAtHome(), "presenceAtHome");
+  }
+
+  private boolean cleanStartInLastHour() throws TemporalyFailure {
+    Date cd = lastCleanDate();
+    long tNow = new Date().getTime();
+    long tClean = cd.getTime();
+    long dSec = (tNow - tClean) / 1000;
+
+    return dSec < 3600;
+
   }
 
   private boolean cleanedSomeTimeAgo() throws TemporalyFailure {
@@ -116,6 +135,15 @@ public class Mx implements Callable<Void> {
     }
   }
 
+  private void sendMiroboHome() throws MqttException, IOException, InterruptedException {
+    LOG.info("home");
+    mqttService.publishCleanTime(new Date().getTime() - Settings.instance().getCleanInterval() * 1000);
+    int rc = mirobo("home");
+    if (rc != 0) {
+      LOG.error("mirobo return code: " + rc);
+    }
+  }
+
   private int mirobo(String string) throws IOException, InterruptedException {
     try {
       return CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
@@ -133,8 +161,24 @@ public class Mx implements Callable<Void> {
     String interestingMacsPattern = "mac=~\"(" + Joiner.on("|").join(s.getPhoneMacs()) + ")\"";
 
     //    String query = "absent(wifi_station_signal_dbm{MACS} offset 10m) and absent(wifi_station_signal_dbm{MACS})";
-    String query = "absent(count_over_time(wifi_station_signal_dbm{MACS}[3m] offset 385m)) "
-        + "and absent(absent(count_over_time(wifi_station_signal_dbm{MACS}[10m] offset 385m) ))";
+    String query = "absent(count_over_time(wifi_station_signal_dbm{MACS}[3m])) "
+        + "and absent(absent(count_over_time(wifi_station_signal_dbm{MACS}[10m])))";
+
+    query = query.replaceAll("MACS", interestingMacsPattern);
+
+    List<PMetric> res = promClient.doQuery(query);
+    return res.size() > 0;
+  }
+
+  private boolean presenceTransitionToAtHome() throws TemporalyFailure {
+    Settings s = Settings.instance();
+    PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress(), false);
+
+    String interestingMacsPattern = "mac=~\"(" + Joiner.on("|").join(s.getPhoneMacs()) + ")\"";
+
+    //    String query = "absent(wifi_station_signal_dbm{MACS} offset 10m) and absent(wifi_station_signal_dbm{MACS})";
+    String query = "absent(count_over_time(wifi_station_signal_dbm{MACS}[1m] offset 2m)) "
+        + "and absent(absent(count_over_time(wifi_station_signal_dbm{MACS}[2m])))";
 
     query = query.replaceAll("MACS", interestingMacsPattern);
 
