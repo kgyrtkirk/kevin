@@ -146,6 +146,7 @@ public class Mx implements Callable<Void> {
 
   private int mirobo(String string) throws IOException, InterruptedException {
     try {
+      CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
       return CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
     } catch (TimeoutException te) {
       LOG.error("timeout", te);

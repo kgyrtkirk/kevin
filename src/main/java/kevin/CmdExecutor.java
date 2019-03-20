@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
+
 public class CmdExecutor {
 
   static class StreamGobbler implements Runnable {
@@ -31,7 +33,9 @@ public class CmdExecutor {
   public static int executeCommandLine(final String[] commandLine, final long timeout)
       throws IOException, InterruptedException, TimeoutException {
 
+
     Logger logger = LoggerFactory.getLogger(CmdExecutor.class);
+    logger.info("execute:" + Joiner.on(" ").join(commandLine));
 
     ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
     processBuilder.environment().putAll(Settings.instance().getExecEnvironment());
@@ -46,6 +50,7 @@ public class CmdExecutor {
     try {
       worker.join(timeout);
       if (worker.exit != null) {
+        logger.info("exit code: " + worker.exit);
         return worker.exit;
       } else {
         throw new TimeoutException();
