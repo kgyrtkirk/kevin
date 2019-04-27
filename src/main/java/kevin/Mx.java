@@ -25,6 +25,9 @@ public class Mx implements Callable<Void> {
   @Option(names = "-r", description = "runContinously")
   boolean runContinously;
 
+  @Option(names = "-pp", description = "prometheus port", defaultValue = "16701")
+  int prometheusPort;
+
   @Option(names = { "-h", "--help" }, usageHelp = true, description = "display a help message")
   private boolean helpRequested;
 
@@ -60,9 +63,11 @@ public class Mx implements Callable<Void> {
   }
 
   private void runLoop() throws Exception {
+    PromMetricsServer promMetricsServer = new PromMetricsServer(prometheusPort);
     while (true) {
       Thread.sleep(10000);
       run();
+      PromMetricsServer.loops.inc();
     }
   }
 
