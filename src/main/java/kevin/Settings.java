@@ -14,6 +14,7 @@ public class Settings {
     public Set<String> phoneMacs;
     public Long cleanInterval;
     public Map<String, String> execEnvironment;
+    public String slackHookUrl;
 
     //    public JenkinsSettings jenkins = new JenkinsSettings();
     //    public JiraSettings jira = new JiraSettings();
@@ -63,6 +64,10 @@ public class Settings {
 
   public long getCleanInterval() {
     return ensureNotNull(dataClass.cleanInterval);
+  }
+
+  public String getSlackHookUrl() {
+    return ensureNotNull(dataClass.slackHookUrl);
   }
 
 }

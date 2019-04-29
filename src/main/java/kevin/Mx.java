@@ -1,7 +1,9 @@
 
 package kevin;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
+import hu.rxd.kevin.slack.SlackUtils;
 import kevin.PrometheusApiClient.PMetric;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -64,19 +67,36 @@ public class Mx implements Callable<Void> {
 
   private void runLoop() throws Exception {
     PromMetricsServer promMetricsServer = new PromMetricsServer(prometheusPort);
-    while (true) {
-      Thread.sleep(10000);
-      run();
-      PromMetricsServer.loops.inc();
+    try {
+      SlackUtils.sendMessage("kevin launched..");
+      while (true) {
+        Thread.sleep(10000);
+        run();
+        PromMetricsServer.loops.inc();
+      }
+    } catch (Exception e) {
+      SlackUtils.sendMessage("<!channel> Encountered exception: " + exceptionStacktraceToString(e));
+    } finally {
+      SlackUtils.sendMessage("<!here> shutting down?!");
     }
+  }
+
+  public static String exceptionStacktraceToString(Exception e) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PrintStream ps = new PrintStream(baos);
+    e.printStackTrace(ps);
+    ps.close();
+    return baos.toString();
   }
 
   private void run() throws Exception {
     try {
       if (needClean()) {
+        SlackUtils.sendMessage("Initiating cleanup...");
         startMirobo();
       }
       if (interruptClean()) {
+        SlackUtils.sendMessage("Cleanup interrupted; going home");
         sendMiroboHome();
       }
     } catch (TemporalyFailure e) {
