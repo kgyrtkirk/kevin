@@ -1,8 +1,13 @@
+plugins {
+  id "io.freefair.lombok" version "3.2.1"
+}
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
+
 repositories { mavenCentral() }
+
 
 mainClassName='kevin.Mx'
 
