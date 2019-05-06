@@ -53,7 +53,7 @@ public class CmdExecutor {
         logger.info("exit code: " + worker.exit);
         return worker.exit;
       } else {
-        throw new TimeoutException();
+        throw new TimeoutException("After " + timeout + "ms command: " + Joiner.on(" ").join(commandLine));
       }
     } catch (InterruptedException ex) {
       worker.interrupt();

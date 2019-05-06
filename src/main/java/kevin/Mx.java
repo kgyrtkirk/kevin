@@ -36,7 +36,7 @@ public class Mx implements Callable<Void> {
 
   private KMqttService mqttService;
 
-  private long MIROBO_TIMEOUT = 10000;
+  private long MIROBO_TIMEOUT = 15000;
   static Logger LOG = LoggerFactory.getLogger(Mx.class);
 
   public static void main(String[] args) throws Exception {
@@ -171,7 +171,11 @@ public class Mx implements Callable<Void> {
 
   private int mirobo(String string) throws IOException, InterruptedException {
     try {
-      CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
+      try {
+        CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
+      } catch (TimeoutException te) {
+        // ignore
+      }
       return CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
     } catch (TimeoutException te) {
       LOG.error("timeout", te);
