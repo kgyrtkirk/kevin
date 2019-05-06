@@ -176,7 +176,11 @@ public class Mx implements Callable<Void> {
       } catch (TimeoutException te) {
         // ignore
       }
-      return CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
+      int exitCode = CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
+      if (exitCode != 0) {
+        SlackUtils.sendMessage("mirobo " + string + " exitcode:" + exitCode);
+      }
+      return exitCode;
     } catch (TimeoutException te) {
       LOG.error("timeout", te);
       new TemporalyFailure("mirobo timed out");
