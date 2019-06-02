@@ -15,6 +15,7 @@ public class Settings {
     public Long cleanInterval;
     public Map<String, String> execEnvironment;
     public String slackHookUrl;
+    public String kodiAddress;
 
     //    public JenkinsSettings jenkins = new JenkinsSettings();
     //    public JiraSettings jira = new JiraSettings();
@@ -68,6 +69,10 @@ public class Settings {
 
   public String getSlackHookUrl() {
     return ensureNotNull(dataClass.slackHookUrl);
+  }
+
+  public String getKodiAddress() {
+    return ensureNotNull(dataClass.kodiAddress);
   }
 
 }

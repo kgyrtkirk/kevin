@@ -9,11 +9,16 @@ import com.amazon.ask.model.Response;
 public class CancelandStopIntentHandler implements RequestHandler {
 
   public boolean canHandle(HandlerInput input) {
-    return input.matches(intentName("AMAZON.StopIntent").or(intentName("AMAZON.CancelIntent")));
+    return input
+        .matches(intentName("AMAZON.StopIntent")
+            .or(intentName("AMAZON.CancelIntent")));
   }
 
   public Optional<Response> handle(HandlerInput input) {
     String speechText = "Bye Bye";
-    return input.getResponseBuilder().withSpeech(speechText).withSimpleCard("HelloWorld", speechText).build();
+    return input.getResponseBuilder()
+        .withSpeech(speechText)
+        .withSimpleCard("HelloWorld", speechText)
+        .build();
   }
 }

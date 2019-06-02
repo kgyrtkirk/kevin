@@ -1,0 +1,112 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "kodi",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "Navigate",
+                    "slots": [
+                        {
+                            "name": "direction",
+                            "type": "Direction"
+                        },
+                        {
+                            "name": "action",
+                            "type": "Action"
+                        }
+                    ],
+                    "samples": [
+                        "{action} it",
+                        "{action} this",
+                        "Please {action}",
+                        "{action}",
+                        "{direction}",
+                        "Go {direction}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "Direction",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Bottom"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Top"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Right"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Left"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Up"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Down"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Action",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "rewind"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "pause"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "stop"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Play"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
