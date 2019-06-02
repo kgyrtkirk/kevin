@@ -5,6 +5,5 @@ public class Example {
     SlackMessage slackMessage = SlackMessage.builder().text("just testing").build();
     SlackUtils.sendMessage(slackMessage);
     System.out.println("asd");
-
   }
 }
