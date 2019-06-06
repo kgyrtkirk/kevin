@@ -14,10 +14,9 @@ public class LaunchRequestHandler implements RequestHandler {
   }
 
   public Optional<Response> handle(HandlerInput input) {
-    String speechText = "Welcome to Hello World, You can say Hello";
+    String speechText = "Connected to Kodi Control";
     return input.getResponseBuilder()
         .withSpeech(speechText)
-        .withSimpleCard("HelloWorld", speechText)
         .withReprompt(speechText)
         .build();
   }

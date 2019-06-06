@@ -23,6 +23,8 @@ import kevin.PrometheusApiClient.PMetric;
 
 public class KodiApiClient {
 
+  private static KodiApiClient instance;
+
   Logger LOG = LoggerFactory.getLogger(PrometheusApiClient.class);
 
   private final WebTarget webTarget;
@@ -41,6 +43,7 @@ public class KodiApiClient {
     webTarget = webTarget0;
   }
 
+  public
   enum KodiCmds {
     UP("Input.Up"), DOWN("Input.Down"),
     LEFT("Input.Left"), RIGHT("Input.Right"), SELECT("Input.Select")
@@ -56,8 +59,15 @@ public class KodiApiClient {
 
   }
 
+  public static KodiApiClient getInstance() {
+    if (instance == null) {
+      instance = new KodiApiClient(Settings.instance().getKodiAddress(), true);
+    }
+    return instance;
+  }
+
   public static void main(String[] args) throws TemporalyFailure {
-    KodiApiClient c = new KodiApiClient(Settings.instance().getKodiAddress(), true);
+    KodiApiClient c = getInstance();
     //    while (true) {
     //      Thread.sleep(1000);
     c.send(KodiCmds.DOWN);
@@ -76,7 +86,7 @@ public class KodiApiClient {
     }
   }
 
-  private void send(KodiCmds cmd) {
+  public void send(KodiCmds cmd) {
     Object r = new KodiRequest(cmd.method);
     Response response = webTarget.path("jsonrpc").request(MediaType.APPLICATION_JSON)
 
