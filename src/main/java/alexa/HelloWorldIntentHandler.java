@@ -27,6 +27,8 @@ public class HelloWorldIntentHandler implements RequestHandler {
     actions.put("Navigate_Select", new SimpleKodiCmd(KodiCmds.SELECT));
     actions.put("Navigate_Up", new SimpleKodiCmd(KodiCmds.UP));
     actions.put("Navigate_Down", new SimpleKodiCmd(KodiCmds.DOWN));
+    actions.put("Navigate_Play", new SimpleKodiCmd(KodiCmds.PLAY));
+    actions.put("Navigate_Stop", new SimpleKodiCmd(KodiCmds.STOP));
   }
 
   static class SimpleKodiCmd implements Runnable {
@@ -52,8 +54,7 @@ public class HelloWorldIntentHandler implements RequestHandler {
   }
 
   public Optional<Response> handle(HandlerInput input) {
-    String speechText = " \n" +
-        "";
+    String speechText = " \n";
     RequestHelper h = RequestHelper.forHandlerInput(input);
     String intentName = h.getIntentName();
     Runnable action = actions.get(intentName);

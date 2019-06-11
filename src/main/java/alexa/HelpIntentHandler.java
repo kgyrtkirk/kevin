@@ -9,7 +9,9 @@ import com.amazon.ask.model.Response;
 public class HelpIntentHandler implements RequestHandler {
 
   public boolean canHandle(HandlerInput input) {
-    return input.matches(intentName("AMAZON.HelpIntent"));
+    return input.matches(intentName("AMAZON.HelpIntent"))
+        || input.matches(intentName("AMAZON.FallbackIntent"));
+
   }
 
   public Optional<Response> handle(HandlerInput input) {

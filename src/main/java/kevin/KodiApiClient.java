@@ -1,6 +1,7 @@
 
 package kevin;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,25 +44,41 @@ public class KodiApiClient {
     webTarget = webTarget0;
   }
 
-  public
-  enum KodiCmds {
-    UP("Input.Up"), DOWN("Input.Down"),
-    LEFT("Input.Left"), RIGHT("Input.Right"), SELECT("Input.Select")
-    , BACK("Input.Back")
-    ;
 
+  public enum KodiCmds {
+    // @formatter:off
+    UP("Input.Up"),
+    DOWN("Input.Down"),
+    LEFT("Input.Left"),
+    RIGHT("Input.Right"),
+    SELECT("Input.Select"),
+    BACK("Input.Back"),
+    PLAY("Input.ExecuteAction", "play"),
+    PLAYPAUSE("Input.ExecuteAction", "playpause"),
+    STOP("Input.ExecuteAction", "stop"), 
+    SCROLLUP("Input.ExecuteAction", "scrollup"), 
+    SCROLLDOWN("Input.ExecuteAction", "scrolldown"), 
+    ENTER("Input.ExecuteAction", "enter"), 
+    ;
+    // @formatter:on
     public final String method;
+    private HashMap<String, String> param;
 
     private KodiCmds(String method) {
       this.method = method;
-      // TODO Auto-generated constructor stub
+    }
+
+    private KodiCmds(String method, String actionParam) {
+      this.method = method;
+      this.param = new HashMap<>();
+      param.put("action", actionParam);
     }
 
   }
 
   public static KodiApiClient getInstance() {
     if (instance == null) {
-      instance = new KodiApiClient(Settings.instance().getKodiAddress(), true);
+      instance = new KodiApiClient(Settings.instance().getKodiAddress(), false);
     }
     return instance;
   }
@@ -70,7 +87,7 @@ public class KodiApiClient {
     KodiApiClient c = getInstance();
     //    while (true) {
     //      Thread.sleep(1000);
-    c.send(KodiCmds.DOWN);
+    c.send(KodiCmds.SCROLLUP);
     //    }
 
   }
@@ -79,15 +96,18 @@ public class KodiApiClient {
     public int id = 1;
     public String jsonrpc = "2.0";
     public String method;
+    public Map<String, String> params;
 
     //    Map<String, Object> params;
-    KodiRequest(String m) {
-      method = m;
+    KodiRequest(KodiCmds cmd) {
+      method = cmd.method;
+      params = cmd.param;
     }
   }
 
   public void send(KodiCmds cmd) {
-    Object r = new KodiRequest(cmd.method);
+    System.out.println("send:" + cmd);
+    Object r = new KodiRequest(cmd);
     Response response = webTarget.path("jsonrpc").request(MediaType.APPLICATION_JSON)
 
         //        .queryParam("query", query.replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"))

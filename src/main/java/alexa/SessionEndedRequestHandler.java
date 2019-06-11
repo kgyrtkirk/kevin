@@ -15,6 +15,7 @@ public class SessionEndedRequestHandler implements RequestHandler {
 
   public Optional<Response> handle(HandlerInput input) {
     return input.getResponseBuilder()
+        .withSpeech("ended but why?")
         .build();
   }
 }
