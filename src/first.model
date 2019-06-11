@@ -9,35 +9,53 @@
                 },
                 {
                     "name": "AMAZON.CancelIntent",
-                    "samples": ["exit"]
+                    "samples": []
                 },
                 {
                     "name": "AMAZON.HelpIntent",
-                    "samples": ["help me"]
+                    "samples": []
                 },
                 {
                     "name": "AMAZON.StopIntent",
-                    "samples": ["stop"]
+                    "samples": []
                 },
                 {
-                    "name": "Navigate",
-                    "slots": [
-                        {
-                            "name": "direction",
-                            "type": "Direction"
-                        },
-                        {
-                            "name": "action",
-                            "type": "Action"
-                        }
-                    ],
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "Navigate_Default",
+                    "slots": [],
                     "samples": [
-                        "{action} it",
-                        "{action} this",
-                        "Please {action}",
-                        "{action}",
-                        "{direction}",
-                        "Go {direction}"
+                        "Default"
+                    ]
+                },
+                {
+                    "name": "Navigate_Select",
+                    "slots": [],
+                    "samples": [
+                        "Select"
+                    ]
+                },
+                {
+                    "name": "Navigate_Up",
+                    "slots": [],
+                    "samples": [
+                        "Up"
+                    ]
+                },
+                {
+                    "name": "Navigate_Down",
+                    "slots": [],
+                    "samples": [
+                        "Down"
+                    ]
+                },
+                {
+                    "name": "Navigate_Back",
+                    "slots": [],
+                    "samples": [
+                        "Back"
                     ]
                 }
             ],

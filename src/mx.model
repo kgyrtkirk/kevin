@@ -1,0 +1,62 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "kodi",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": ["exit"]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": ["help me"]
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": ["stop"]
+                },
+                {
+                    "name": "Navigate_Default",
+                    "slots": [],
+                    "samples": [
+                        "Default"
+                    ]
+                },
+                {
+                    "name": "Navigate_Select",
+                    "slots": [],
+                    "samples": [
+                        "Select"
+                    ]
+                },
+                {
+                    "name": "Navigate_Up",
+                    "slots": [],
+                    "samples": [
+                        "Up"
+                    ]
+                },
+                {
+                    "name": "Navigate_Down",
+                    "slots": [],
+                    "samples": [
+                        "Down"
+                    ]
+                },
+                {
+                    "name": "Navigate_Back",
+                    "slots": [],
+                    "samples": [
+                        "Back"
+                    ]
+                }
+            ],
+            "types": [
+            ]
+        }
+    }
+}
