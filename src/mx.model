@@ -26,34 +26,19 @@
                         "Default"
                     ]
                 },
-                {
-                    "name": "Navigate_Select",
-                    "slots": [],
-                    "samples": [
-                        "Select"
-                    ]
-                },
-                {
-                    "name": "Navigate_Up",
-                    "slots": [],
-                    "samples": [
-                        "Up"
-                    ]
-                },
-                {
-                    "name": "Navigate_Down",
-                    "slots": [],
-                    "samples": [
-                        "Down"
-                    ]
-                },
-                {
-                    "name": "Navigate_Back",
-                    "slots": [],
-                    "samples": [
-                        "Back"
-                    ]
-                }
+                { "name": "Navigate_Select", "slots": [], "samples": [ "Select" ] },
+                { "name": "Navigate_Up", "slots": [], "samples": [ "Up" ] },
+                { "name": "Navigate_Down", "slots": [], "samples": [ "Down" ] },
+                { "name": "Navigate_Left", "slots": [], "samples": [ "Left" ] },
+                { "name": "Navigate_Right", "slots": [], "samples": [ "Right" ] },
+                { "name": "Navigate_Back", "slots": [], "samples": [ "Back" ] },
+                { "name": "Navigate_Enter", "slots": [], "samples": [ "Enter" ] },
+                { "name": "Navigate_Play", "slots": [], "samples": [ "Play" ] },
+                { "name": "Navigate_Stop", "slots": [], "samples": [ "Stop" ] },
+                { "name": "Navigate_Pause", "slots": [], "samples": [ "Pause" ] },
+                { "name": "Navigate_Scrollup", "slots": [], "samples": [ "Scroll up" ] },
+                { "name": "Navigate_Scrolldown", "slots": [], "samples": [ "Scroll down" ] },
+                { "name": "AMAZON.NavigateHomeIntent", "samples": [] }
             ],
             "types": [
             ]

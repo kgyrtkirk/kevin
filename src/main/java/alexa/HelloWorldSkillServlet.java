@@ -14,7 +14,7 @@ public class HelloWorldSkillServlet extends SkillServlet {
     return Skills.standard()
         .addRequestHandlers(
             new CancelandStopIntentHandler(),
-            new HelloWorldIntentHandler(),
+            new KodiIntentHandler(),
             new HelpIntentHandler(),
             new LaunchRequestHandler(),
             new SessionEndedRequestHandler())

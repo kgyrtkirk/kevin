@@ -1,6 +1,7 @@
 
 package kevin;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class KodiApiClient {
 
     private KodiCmds(String method) {
       this.method = method;
+      this.param = new HashMap<String, String>();
     }
 
     private KodiCmds(String method, String actionParam) {
@@ -87,7 +89,7 @@ public class KodiApiClient {
     KodiApiClient c = getInstance();
     //    while (true) {
     //      Thread.sleep(1000);
-    c.send(KodiCmds.SCROLLUP);
+    c.send(KodiCmds.DOWN);
     //    }
 
   }

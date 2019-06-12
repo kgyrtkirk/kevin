@@ -18,17 +18,23 @@ import kevin.KodiApiClient.KodiCmds;
 
 import static com.amazon.ask.request.Predicates.intentName;
 
-public class HelloWorldIntentHandler implements RequestHandler {
+public class KodiIntentHandler implements RequestHandler {
 
   private Map<String, Runnable> actions = new HashMap<>();
 
-  public HelloWorldIntentHandler() {
+  public KodiIntentHandler() {
     actions.put("Navigate_Back", new SimpleKodiCmd(KodiCmds.BACK));
     actions.put("Navigate_Select", new SimpleKodiCmd(KodiCmds.SELECT));
     actions.put("Navigate_Up", new SimpleKodiCmd(KodiCmds.UP));
     actions.put("Navigate_Down", new SimpleKodiCmd(KodiCmds.DOWN));
+    actions.put("Navigate_Left", new SimpleKodiCmd(KodiCmds.LEFT));
+    actions.put("Navigate_Right", new SimpleKodiCmd(KodiCmds.RIGHT));
+    actions.put("Navigate_Enter", new SimpleKodiCmd(KodiCmds.ENTER));
     actions.put("Navigate_Play", new SimpleKodiCmd(KodiCmds.PLAY));
     actions.put("Navigate_Stop", new SimpleKodiCmd(KodiCmds.STOP));
+    actions.put("Navigate_Pause", new SimpleKodiCmd(KodiCmds.PLAYPAUSE));
+    actions.put("Navigate_Scrollup", new SimpleKodiCmd(KodiCmds.SCROLLUP));
+    actions.put("Navigate_Scrolldown", new SimpleKodiCmd(KodiCmds.SCROLLDOWN));
   }
 
   static class SimpleKodiCmd implements Runnable {
