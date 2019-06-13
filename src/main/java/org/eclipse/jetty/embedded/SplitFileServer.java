@@ -12,7 +12,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.util.resource.Resource;
 
-import alexa.HelloWorldSkillServlet;
+import hu.rxd.kevin.alexa.KodiSkillServlet;
 
 /**
  * A {@link ContextHandlerCollection} handler may be used to direct a request to
@@ -35,7 +35,7 @@ public class SplitFileServer
 
         
         ServletHandler sh = new ServletHandler();
-    sh.addServletWithMapping(HelloWorldSkillServlet.class, "/*");
+    sh.addServletWithMapping(KodiSkillServlet.class, "/*");
         
         // Create a Context Handler and ResourceHandler. The ContextHandler is
         // getting set to "/" path but this could be anything you like for
