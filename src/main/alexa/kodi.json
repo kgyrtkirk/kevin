@@ -9,7 +9,7 @@
                 },
                 {
                     "name": "AMAZON.CancelIntent",
-                    "samples": ["exit"]
+                    "samples": ["abort"]
                 },
                 {
                     "name": "AMAZON.HelpIntent",
@@ -17,7 +17,7 @@
                 },
                 {
                     "name": "AMAZON.StopIntent",
-                    "samples": ["stop"]
+                    "samples": ["exit"]
                 },
                 {
                     "name": "Navigate_Default",
