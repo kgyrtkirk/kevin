@@ -57,3 +57,7 @@ compile 'org.eclipse.jetty:jetty-server:9.4.18.v20190429'
 }
 
 
+task(runAlexaSkillServer, dependsOn: 'classes', type: JavaExec) {
+   main = 'hu.rxd.kevin.alexa.AlexaSkillServer'
+   classpath = sourceSets.main.runtimeClasspath
+}
