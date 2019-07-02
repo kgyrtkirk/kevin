@@ -1,4 +1,4 @@
-package hu.rxd.kevin.alexa;
+package hu.rxd.kevin.alexa.kodi;
 
 import static com.amazon.ask.request.Predicates.intentName;
 import static com.amazon.ask.request.Predicates.requestType;
@@ -11,6 +11,7 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.LaunchRequest;
+import com.amazon.ask.model.Request;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.model.SessionEndedRequest;
 import com.amazon.ask.servlet.SkillServlet;
@@ -41,11 +42,14 @@ public class KodiSkillServlet extends SkillServlet {
 
     @Override
     public boolean canHandle(HandlerInput input) {
+      Request r = input.getRequest();
       if (input.getRequest() instanceof IntentRequest) {
-        String n = (((IntentRequest) input.getRequestEnvelope().getRequest()).getIntent().getName());
+        Request request = input.getRequestEnvelope().getRequest();
+        String n = (((IntentRequest) request).getIntent().getName());
         System.out.println("intent::::" + n);
       } else {
-        System.out.println("???" + input);
+        System.out.println("???" + r.getClass().getAnnotatedInterfaces());
+        System.out.println("???" + r);
       }
       return false;
     }

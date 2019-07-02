@@ -1,4 +1,4 @@
-package hu.rxd.kevin.alexa;
+package hu.rxd.kevin.alexa.kodi;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -7,8 +7,6 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeoutException;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +34,6 @@ public class Mx implements Callable<Void> {
 
   private KMqttService mqttService;
 
-  private long MIROBO_TIMEOUT = 15000;
   static Logger LOG = LoggerFactory.getLogger(Mx.class);
 
   public static void main(String[] args) throws Exception {
@@ -51,7 +48,7 @@ public class Mx implements Callable<Void> {
       mqttService = mqttService1;
 
       if (runChecks) {
-        mirobo("find");
+        MiroboClient.mirobo("find");
         return null;
       }
 
@@ -154,7 +151,7 @@ public class Mx implements Callable<Void> {
   private void startMirobo() throws Exception {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
-    int rc = mirobo("start");
+    int rc = MiroboClient.mirobo("start");
     if (rc != 0) {
       LOG.error("mirobo return code: " + rc);
     }
@@ -163,29 +160,10 @@ public class Mx implements Callable<Void> {
   private void sendMiroboHome() throws MqttException, IOException, InterruptedException {
     LOG.info("home");
     mqttService.publishCleanTime(new Date().getTime() - Settings.instance().getCleanInterval() * 1000);
-    int rc = mirobo("home");
+    int rc = MiroboClient.mirobo("home");
     if (rc != 0) {
       LOG.error("mirobo return code: " + rc);
     }
-  }
-
-  private int mirobo(String string) throws IOException, InterruptedException {
-    try {
-      try {
-        CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
-      } catch (TimeoutException te) {
-        // ignore
-      }
-      int exitCode = CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
-      if (exitCode != 0) {
-        SlackUtils.sendMessage("mirobo " + string + " exitcode:" + exitCode);
-      }
-      return exitCode;
-    } catch (TimeoutException te) {
-      LOG.error("timeout", te);
-      new TemporalyFailure("mirobo timed out");
-    }
-    throw new RuntimeException("???");
   }
 
   private boolean everyoneIsAway() throws TemporalyFailure {

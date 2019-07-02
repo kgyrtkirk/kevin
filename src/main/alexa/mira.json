@@ -1,0 +1,39 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "mira",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": ["abort"]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": ["help me"]
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": ["exit"]
+                },
+                {
+                    "name": "Navigate_Default",
+                    "slots": [],
+                    "samples": [
+                        "Default"
+                    ]
+                },
+                { "name": "mirobo_start", "slots": [], "samples": [ "start cleaning", "start vacuuming", "start" ] },
+                { "name": "mirobo_home", "slots": [], "samples": [ "go home", "return to base" ] },
+                { "name": "mirobo_pause", "slots": [], "samples": [ "pause", "take a break" ] },
+                { "name": "mirobo_find", "slots": [], "samples": [ "shout", "it's location" ] },
+                { "name": "AMAZON.NavigateHomeIntent", "samples": [] }
+            ],
+            "types": [
+            ]
+        }
+    }
+}
