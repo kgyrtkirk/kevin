@@ -14,7 +14,7 @@ public class SlackMessage implements Serializable {
   private String icon_emoji;
 
   static class Builder {
-    SlackMessage instance;
+    SlackMessage instance = new SlackMessage();
 
     public Builder text(String string) {
       instance.text = string;
@@ -28,5 +28,17 @@ public class SlackMessage implements Serializable {
 
   public static Builder builder() {
     return new Builder();
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public String getIcon_emoji() {
+    return icon_emoji;
   }
 }
