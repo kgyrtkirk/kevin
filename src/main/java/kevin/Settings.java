@@ -9,6 +9,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class Settings {
 
+  public static class CleanZone {
+    public String name;
+    public String zone;
+  }
+
   private static class DataClass {
     public String prometheusAddress;
     public Set<String> phoneMacs;
@@ -16,6 +21,9 @@ public class Settings {
     public Map<String, String> execEnvironment;
     public String slackHookUrl;
     public String kodiAddress;
+
+
+    public Map<String, CleanZone> cleanZones;
 
     //    public JenkinsSettings jenkins = new JenkinsSettings();
     //    public JiraSettings jira = new JiraSettings();
@@ -73,6 +81,10 @@ public class Settings {
 
   public String getKodiAddress() {
     return ensureNotNull(dataClass.kodiAddress);
+  }
+
+  public Map<String, CleanZone> getCleanZones() {
+    return ensureNotNull(dataClass.cleanZones);
   }
 
 }

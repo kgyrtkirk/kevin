@@ -2,6 +2,8 @@
 package kevin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -15,10 +17,14 @@ public class MiroboClient {
 
   private static final long MIROBO_TIMEOUT = 15000;
 
-  public static int mirobo(String string) throws IOException, InterruptedException {
+  public static int mirobo(String... string) throws IOException, InterruptedException {
     try {
       wakeCommand();
-      int exitCode = CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
+      ArrayList<String> args = new ArrayList<>();
+      args.add("mirobo");
+      args.addAll(Arrays.asList(string));
+
+      int exitCode = CmdExecutor.executeCommandLine(args.toArray(new String[0]), MIROBO_TIMEOUT);
       if (exitCode != 0) {
         SlackUtils.sendMessage("mirobo " + string + " exitcode:" + exitCode);
       }

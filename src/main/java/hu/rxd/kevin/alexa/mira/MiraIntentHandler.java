@@ -1,5 +1,7 @@
 package hu.rxd.kevin.alexa.mira;
 
+import static com.amazon.ask.request.Predicates.intentName;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,16 +11,14 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import org.ietf.jgss.Oid;
-
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
 import com.amazon.ask.request.RequestHelper;
 
 import kevin.MiroboClient;
-
-import static com.amazon.ask.request.Predicates.intentName;
+import kevin.Settings;
+import kevin.Settings.CleanZone;
 
 public class MiraIntentHandler implements RequestHandler {
 
@@ -30,6 +30,13 @@ public class MiraIntentHandler implements RequestHandler {
     actions.put("mirobo_pause", new SimpleMiroboCmd("pause"));
     actions.put("mirobo_home", new SimpleMiroboCmd("home"));
     actions.put("mirobo_find", new SimpleMiroboCmd("find"));
+    Map<String, CleanZone> z = Settings.instance().getCleanZones();
+
+    for (Entry<String, CleanZone> e : z.entrySet()) {
+      actions.put(e.getKey(),
+          new ZoneCleanMiroboCmd(e.getValue()));
+    }
+
   }
 
   
@@ -63,6 +70,29 @@ public class MiraIntentHandler implements RequestHandler {
     @Override
     public String getHelp() {
       return cmd;
+    }
+
+  }
+
+  static class ZoneCleanMiroboCmd implements AlexaCmd {
+    private CleanZone cz;
+
+    public ZoneCleanMiroboCmd(CleanZone cleanZone) {
+      this.cz = cleanZone;
+    }
+
+    @Override
+    public void run() {
+      try {
+        MiroboClient.mirobo("zoned-clean", cz.zone);
+      } catch (IOException | InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public String getHelp() {
+      return cz.name;
     }
 
   }

@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "mira",
+            "invocationName": "beloved mira",
             "intents": [
                 {
                     "name": "AMAZON.FallbackIntent",
@@ -30,6 +30,12 @@
                 { "name": "mirobo_home", "slots": [], "samples": [ "go home", "return to base" ] },
                 { "name": "mirobo_pause", "slots": [], "samples": [ "pause", "take a break" ] },
                 { "name": "mirobo_find", "slots": [], "samples": [ "shout", "it's location" ] },
+                
+                { "name": "mirobo_livingroom", "slots": [], "samples": [ "clean the living room","living room" ] },
+                { "name": "mirobo_kitchen", "slots": [], 	"samples": [ "clean the kitchen","kitchen" ] },
+                { "name": "mirobo_hall", "slots": [], 	"samples": [ "clean the hall","hall" ] },
+                { "name": "mirobo_carpet", "slots": [], 	"samples": [ "clean the carpet","carpet" ] },
+                
                 { "name": "AMAZON.NavigateHomeIntent", "samples": [] }
             ],
             "types": [
