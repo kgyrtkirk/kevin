@@ -16,6 +16,8 @@ import com.amazon.ask.model.Response;
 import com.amazon.ask.model.SessionEndedRequest;
 import com.amazon.ask.servlet.SkillServlet;
 
+import kevin.MiroboClient;
+
 public class MiraSkillServlet extends SkillServlet {
 
   private static final long serialVersionUID = 1L;
@@ -109,6 +111,7 @@ public class MiraSkillServlet extends SkillServlet {
     @Override
     public Optional<Response> handle(HandlerInput input) {
       String speechText = "I speak on behalf of Mira";
+      MiroboClient.asyncWake();
       return input.getResponseBuilder()
           .withSpeech(speechText)
           .withReprompt(speechText)

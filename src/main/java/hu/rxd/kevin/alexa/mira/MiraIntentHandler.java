@@ -27,6 +27,12 @@ public class MiraIntentHandler implements RequestHandler {
     actions.put("mirobo_find", new SimpleMiroboCmd("find"));
   }
 
+  // eloszoba:  [[26000,24000,28000,27000,1]]
+  // nappali - sonyeg [[27500,20000,30000,23200,1]]
+  // nappali -  [[27500,19000,31000,24000,1]]
+  // konyha:    [[26000,19000,27500,22500,1]]
+
+
   static class SimpleMiroboCmd implements Runnable {
     private String cmd;
 

@@ -17,11 +17,7 @@ public class MiroboClient {
 
   public static int mirobo(String string) throws IOException, InterruptedException {
     try {
-      try {
-        CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
-      } catch (TimeoutException te) {
-        // ignore
-      }
+      wakeCommand();
       int exitCode = CmdExecutor.executeCommandLine(new String[] { "mirobo", string }, MIROBO_TIMEOUT);
       if (exitCode != 0) {
         SlackUtils.sendMessage("mirobo " + string + " exitcode:" + exitCode);
@@ -32,6 +28,27 @@ public class MiroboClient {
       new TemporalyFailure("mirobo timed out");
     }
     throw new RuntimeException("???");
+  }
+
+  private static void wakeCommand() throws IOException, InterruptedException {
+    try {
+      CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);
+    } catch (TimeoutException te) {
+      // ignore
+    }
+  }
+
+  public static void asyncWake() {
+    // fire and forget :D
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          wakeCommand();
+        } catch (IOException | InterruptedException e) {
+        }
+      }
+    }.start();
   }
 
 }
