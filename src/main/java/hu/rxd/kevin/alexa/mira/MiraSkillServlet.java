@@ -3,6 +3,8 @@ package hu.rxd.kevin.alexa.mira;
 import static com.amazon.ask.request.Predicates.intentName;
 import static com.amazon.ask.request.Predicates.requestType;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import com.amazon.ask.Skill;
@@ -16,6 +18,7 @@ import com.amazon.ask.model.Response;
 import com.amazon.ask.model.SessionEndedRequest;
 import com.amazon.ask.servlet.SkillServlet;
 
+import jersey.repackaged.com.google.common.base.Joiner;
 import kevin.MiroboClient;
 
 public class MiraSkillServlet extends SkillServlet {
@@ -27,12 +30,14 @@ public class MiraSkillServlet extends SkillServlet {
   }
 
   private static Skill getSkill() {
+    MiraIntentHandler miraIntentHandler = new MiraIntentHandler();
     return Skills.standard()
         .addRequestHandlers(
             new InspectIntentHandler(),
             new CancelandStopIntentHandler(),
-            new MiraIntentHandler(),
-            new HelpIntentHandler(),
+            miraIntentHandler,
+            new HelpIntentHandler(miraIntentHandler.getHelp()),
+            new FallbackIntentHandler(),
             new LaunchRequestHandler(),
             new SessionEndedRequestHandler())
         // Add your skill id below
@@ -83,16 +88,45 @@ public class MiraSkillServlet extends SkillServlet {
 
   public static class HelpIntentHandler implements RequestHandler {
 
+    private List<String> help;
+
+    public HelpIntentHandler(List<String> help) {
+      this.help = help;
+    }
+
     @Override
     public boolean canHandle(HandlerInput input) {
-      return input.matches(intentName("AMAZON.HelpIntent"))
-          || input.matches(intentName("AMAZON.FallbackIntent"));
+      return input.matches(intentName("AMAZON.HelpIntent"));
 
     }
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-      String speechText = "I am here to say Hello World to You";
+
+      String helpStr = Joiner.on(",").join(help);
+      String speechText = "You may instruct mira to " + helpStr + ".";
+      return input.getResponseBuilder()
+          .withSpeech(speechText)
+          .withSimpleCard("HelloWorld", speechText)
+          .withReprompt(speechText)
+          .build();
+    }
+  }
+
+  public static class FallbackIntentHandler implements RequestHandler {
+
+    public FallbackIntentHandler() {
+    }
+
+    @Override
+    public boolean canHandle(HandlerInput input) {
+      return input.matches(intentName("AMAZON.FallbackIntent"));
+
+    }
+
+    @Override
+    public Optional<Response> handle(HandlerInput input) {
+      String speechText = "I didn't get that...could you repeat it?";
       return input.getResponseBuilder()
           .withSpeech(speechText)
           .withSimpleCard("HelloWorld", speechText)

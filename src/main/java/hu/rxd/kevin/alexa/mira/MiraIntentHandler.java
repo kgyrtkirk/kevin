@@ -1,11 +1,15 @@
 package hu.rxd.kevin.alexa.mira;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+
+import org.ietf.jgss.Oid;
 
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
@@ -18,22 +22,29 @@ import static com.amazon.ask.request.Predicates.intentName;
 
 public class MiraIntentHandler implements RequestHandler {
 
-  private Map<String, Runnable> actions = new HashMap<>();
+  private Map<String, AlexaCmd> actions = new HashMap<>();
 
   public MiraIntentHandler() {
+
     actions.put("mirobo_start", new SimpleMiroboCmd("start"));
     actions.put("mirobo_pause", new SimpleMiroboCmd("pause"));
     actions.put("mirobo_home", new SimpleMiroboCmd("home"));
     actions.put("mirobo_find", new SimpleMiroboCmd("find"));
   }
 
+  
+
   // eloszoba:  [[26000,24000,28000,27000,1]]
   // nappali - sonyeg [[27500,20000,30000,23200,1]]
   // nappali -  [[27500,19000,31000,24000,1]]
   // konyha:    [[26000,19000,27500,22500,1]]
 
+  interface AlexaCmd extends Runnable {
+    String getHelp();
+  }
 
-  static class SimpleMiroboCmd implements Runnable {
+
+  static class SimpleMiroboCmd implements AlexaCmd {
     private String cmd;
 
     SimpleMiroboCmd(String cmd1) {
@@ -49,11 +60,16 @@ public class MiraIntentHandler implements RequestHandler {
       }
     }
 
+    @Override
+    public String getHelp() {
+      return cmd;
+    }
+
   }
 
   @Override
   public boolean canHandle(HandlerInput input) {
-    for (Entry<String, Runnable> e : actions.entrySet()) {
+    for (Entry<String, AlexaCmd> e : actions.entrySet()) {
       if (input.matches(intentName(e.getKey()))) {
         return true;
       }
@@ -86,5 +102,13 @@ public class MiraIntentHandler implements RequestHandler {
         .withShouldEndSession(false)
         .withSpeech(speechText)
         .build();
+  }
+
+  public List<String> getHelp() {
+    List<String> ret = new ArrayList<>();
+    for (AlexaCmd a : actions.values()) {
+      ret.add(a.getHelp());
+    }
+    return ret;
   }
 }
