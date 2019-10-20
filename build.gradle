@@ -6,6 +6,13 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 
 
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 repositories { mavenCentral() }
 
 
