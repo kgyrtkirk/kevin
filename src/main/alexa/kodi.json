@@ -27,8 +27,32 @@
                     ]
                 },
                 { "name": "Navigate_Select", "slots": [], "samples": [ "Select" ] },
-                { "name": "Navigate_Up", "slots": [], "samples": [ "Up" ] },
-                { "name": "Navigate_Down", "slots": [], "samples": [ "Down" ] },
+                { "name": "Navigate_Up",
+                    "slots": [
+                        {
+                            "name": "count",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "go {count} up",
+                        "{count} up",
+                        "up"
+                    ]
+                },
+                { "name": "Navigate_Down",
+                    "slots": [
+                        {
+                            "name": "count",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "go {count} down",
+                        "{count} down",
+                        "Down"
+                    ]
+                },
                 { "name": "Navigate_Left", "slots": [], "samples": [ "Left" ] },
                 { "name": "Navigate_Right", "slots": [], "samples": [ "Right" ] },
                 { "name": "Navigate_Back", "slots": [], "samples": [ "Back" ] },

@@ -20,7 +20,7 @@ import static com.amazon.ask.request.Predicates.intentName;
 
 public class KodiIntentHandler implements RequestHandler {
 
-  private Map<String, Runnable> actions = new HashMap<>();
+  private Map<String, KodiAction> actions = new HashMap<>();
 
   public KodiIntentHandler() {
     actions.put("Navigate_Back", new SimpleKodiCmd(KodiCmds.BACK));
@@ -37,7 +37,11 @@ public class KodiIntentHandler implements RequestHandler {
     actions.put("Navigate_Scrolldown", new SimpleKodiCmd(KodiCmds.SCROLLDOWN));
   }
 
-  static class SimpleKodiCmd implements Runnable {
+  interface KodiAction {
+    void run(int count);
+  }
+
+  static class SimpleKodiCmd implements KodiAction {
     private KodiCmds cmd;
 
     SimpleKodiCmd(KodiCmds cmd1) {
@@ -45,30 +49,43 @@ public class KodiIntentHandler implements RequestHandler {
     }
 
     @Override
-    public void run() {
-      KodiApiClient.getInstance().send(cmd);
+    public void run(int count) {
+      for (int i = 0; i < count; i++) {
+        KodiApiClient.getInstance().send(cmd);
+      }
     }
 
   }
 
   public boolean canHandle(HandlerInput input) {
-    for (Entry<String, Runnable> e : actions.entrySet()) {
+    for (Entry<String, KodiAction> e : actions.entrySet()) {
       if (input.matches(intentName(e.getKey())))
         return true;
     }
     return false;
   }
 
+  //  tell kodi to go three down
   public Optional<Response> handle(HandlerInput input) {
     String speechText = " \n";
     RequestHelper h = RequestHelper.forHandlerInput(input);
     String intentName = h.getIntentName();
-    Runnable action = actions.get(intentName);
+    KodiAction action = actions.get(intentName);
+    Optional<String> countSlot = h.getSlotValue("count");
+    int count = countSlot.isPresent() ? Integer.valueOf(countSlot.get()) : 1;
+    if(count < 0 || count > 10) {
+      return input.getResponseBuilder()
+          .withShouldEndSession(false)
+          .withSpeech("I doubt that you  really meaned: " + count + " times...")
+          .build();
+    }
+
     if (action == null) {
       speechText = "intent " + intentName + " is unknown";
     } else {
       try {
-      action.run();
+        action.run(count);
+        speechText = "<audio src=\"soundbank://soundlibrary/computers/beeps_tones/beeps_tones_06\"/>";
       }catch (Exception e) {
         //FIXME LOG
         if (e instanceof TimeoutException)

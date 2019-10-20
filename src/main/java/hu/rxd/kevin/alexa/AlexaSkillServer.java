@@ -13,6 +13,7 @@ public class AlexaSkillServer {
   public static void main(String[] args) throws Exception {
     Server server = new Server(new QueuedThreadPool());
     ServerConnector connector = new ServerConnector(server);
+    connector.setIdleTimeout(600000); // 10 minutes?
     connector.setPort(8090);
     server.setConnectors(new Connector[] { connector });
 
