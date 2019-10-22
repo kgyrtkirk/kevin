@@ -41,7 +41,7 @@ public class KMqttService implements AutoCloseable {
   }
 
   static class MiRoboState {
-    Long lastCleanTime;
+    Long lastCleanTime = 0l;
   }
 
   MqttState state = new MqttState();
