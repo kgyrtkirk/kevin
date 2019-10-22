@@ -18,6 +18,7 @@ import kevin.PrometheusApiClient.PMetric;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
+//FIXME rename
 public class Mx implements Callable<Void> {
 
   @Option(names = "-c", description = "runs some checks")
@@ -151,6 +152,7 @@ public class Mx implements Callable<Void> {
   private void startMirobo() throws Exception {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
+    //  FIXME:  MiroboClient.mirobo("fanspeed", "70");
     int rc = MiroboClient.mirobo("start");
     if (rc != 0) {
       LOG.error("mirobo return code: " + rc);
