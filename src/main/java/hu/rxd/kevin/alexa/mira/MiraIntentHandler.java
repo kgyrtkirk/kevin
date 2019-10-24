@@ -22,86 +22,17 @@ import kevin.Settings.CleanZone;
 
 public class MiraIntentHandler implements RequestHandler {
 
-  private Map<String, AlexaCmd> actions = new HashMap<>();
+  MiraCommand miraCmd = new MiraCommand();
 
   public MiraIntentHandler() {
-
-    actions.put("mirobo_start", new SimpleMiroboCmd("start"));
-    actions.put("mirobo_pause", new SimpleMiroboCmd("pause"));
-    actions.put("mirobo_home", new SimpleMiroboCmd("home"));
-    actions.put("mirobo_find", new SimpleMiroboCmd("find"));
-    Map<String, CleanZone> z = Settings.instance().getCleanZones();
-
-    for (Entry<String, CleanZone> e : z.entrySet()) {
-      actions.put(e.getKey(),
-          new ZoneCleanMiroboCmd(e.getValue()));
-    }
-
-
-  }
-
-  
-
-  // eloszoba:  [[26000,24000,28000,27000,1]]
-  // nappali - sonyeg [[27500,20000,30000,23200,1]]
-  // nappali -  [[27500,19000,31000,24000,1]]
-  // konyha:    [[26000,19000,27500,22500,1]]
-
-  interface AlexaCmd extends Runnable {
-    String getHelp();
-  }
-
-
-  static class SimpleMiroboCmd implements AlexaCmd {
-    private String cmd;
-
-    SimpleMiroboCmd(String cmd1) {
-      cmd = cmd1;
-    }
-
-    @Override
-    public void run() {
-      try {
-        MiroboClient.mirobo(cmd);
-      } catch (IOException | InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public String getHelp() {
-      return cmd;
-    }
-
-  }
-
-  static class ZoneCleanMiroboCmd implements AlexaCmd {
-    private CleanZone cz;
-
-    public ZoneCleanMiroboCmd(CleanZone cleanZone) {
-      this.cz = cleanZone;
-    }
-
-    @Override
-    public void run() {
-      try {
-        MiroboClient.mirobo("zoned-clean", cz.zone);
-      } catch (IOException | InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public String getHelp() {
-      return cz.name;
-    }
 
   }
 
   @Override
   public boolean canHandle(HandlerInput input) {
-    for (Entry<String, AlexaCmd> e : actions.entrySet()) {
-      if (input.matches(intentName(e.getKey()))) {
+
+    for (String a : miraCmd.getActions()) {
+      if (input.matches(intentName(a))) {
         return true;
       }
     }
@@ -113,12 +44,11 @@ public class MiraIntentHandler implements RequestHandler {
     String speechText = " \n";
     RequestHelper h = RequestHelper.forHandlerInput(input);
     String intentName = h.getIntentName();
-    Runnable action = actions.get(intentName);
-    if (action == null) {
+    if (miraCmd.getActions().contains(intentName)) {
       speechText = "intent " + intentName + " is unknown";
     } else {
       try {
-        action.run();
+        miraCmd.execute(intentName);
       } catch (Exception e) {
         if (e instanceof TimeoutException) {
           speechText = "A timeout exception occured";
@@ -136,10 +66,7 @@ public class MiraIntentHandler implements RequestHandler {
   }
 
   public List<String> getHelp() {
-    List<String> ret = new ArrayList<>();
-    for (AlexaCmd a : actions.values()) {
-      ret.add(a.getHelp());
-    }
-    return ret;
+    // visitor would be better..but meh..
+    return miraCmd.getHelp();
   }
 }
