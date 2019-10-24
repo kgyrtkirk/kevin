@@ -1,5 +1,7 @@
 package hu.rxd.kevin.alexa.kodi;
 
+import static com.amazon.ask.request.Predicates.intentName;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,14 +11,10 @@ import java.util.concurrent.TimeoutException;
 import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.Response;
-import com.amazon.ask.model.Slot;
-import com.amazon.ask.model.ui.PlayBehavior;
 import com.amazon.ask.request.RequestHelper;
 
-import kevin.KodiApiClient;
-import kevin.KodiApiClient.KodiCmds;
-
-import static com.amazon.ask.request.Predicates.intentName;
+import hu.rxd.kevin.kodi.KodiApiClient;
+import hu.rxd.kevin.kodi.KodiApiClient.KodiCmds;
 
 public class KodiIntentHandler implements RequestHandler {
 

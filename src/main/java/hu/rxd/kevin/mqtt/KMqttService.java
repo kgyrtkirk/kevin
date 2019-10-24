@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin.mqtt;
 
 import java.util.UUID;
 
@@ -10,6 +10,8 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import hu.rxd.kevin.Settings;
 
 public class KMqttService implements AutoCloseable {
 
@@ -36,15 +38,16 @@ public class KMqttService implements AutoCloseable {
     //    mqtt.subscribeWithResponse(topicFilter)
   }
 
-  static class MqttState {
-    MiRoboState mirobo = new MiRoboState();
+  
+  public static class MqttState {
+    public MiRoboState mirobo = new MiRoboState();
   }
 
-  static class MiRoboState {
-    Long lastCleanTime = 0l;
+  public static class MiRoboState {
+    public Long lastCleanTime = 0l;
   }
 
-  MqttState state = new MqttState();
+  public MqttState state = new MqttState();
 
   class Listener implements IMqttMessageListener {
 

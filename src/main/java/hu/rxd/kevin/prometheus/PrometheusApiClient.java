@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin.prometheus;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+
+import hu.rxd.kevin.Settings;
+import hu.rxd.kevin.TemporalyFailure;
 
 public class PrometheusApiClient {
 

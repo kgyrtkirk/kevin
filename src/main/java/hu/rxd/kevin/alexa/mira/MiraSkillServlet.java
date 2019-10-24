@@ -3,7 +3,6 @@ package hu.rxd.kevin.alexa.mira;
 import static com.amazon.ask.request.Predicates.intentName;
 import static com.amazon.ask.request.Predicates.requestType;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +17,8 @@ import com.amazon.ask.model.Response;
 import com.amazon.ask.model.SessionEndedRequest;
 import com.amazon.ask.servlet.SkillServlet;
 
+import hu.rxd.kevin.mirobo.MiroboClient;
 import jersey.repackaged.com.google.common.base.Joiner;
-import kevin.MiroboClient;
 
 public class MiraSkillServlet extends SkillServlet {
 

@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin.prometheus;
 
 import java.io.IOException;
 

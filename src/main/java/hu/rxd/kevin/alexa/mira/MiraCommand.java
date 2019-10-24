@@ -2,16 +2,15 @@ package hu.rxd.kevin.alexa.mira;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import kevin.MiroboClient;
-import kevin.Settings;
-import kevin.Settings.CleanZone;
+import hu.rxd.kevin.Settings;
+import hu.rxd.kevin.Settings.CleanZone;
+import hu.rxd.kevin.mirobo.MiroboClient;
 
 public class MiraCommand {
 

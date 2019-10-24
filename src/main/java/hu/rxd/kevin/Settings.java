@@ -1,4 +1,4 @@
-package kevin;
+package hu.rxd.kevin;
 
 import java.io.File;
 import java.util.Map;

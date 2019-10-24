@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin;
 
 public class TemporalyFailure extends Exception {
 

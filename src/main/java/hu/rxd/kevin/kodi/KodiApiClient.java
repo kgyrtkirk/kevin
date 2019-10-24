@@ -1,9 +1,7 @@
 
-package kevin;
+package hu.rxd.kevin.kodi;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -18,16 +16,14 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
-
-import kevin.PrometheusApiClient.PEnvelope;
-import kevin.PrometheusApiClient.PMetric;
+import hu.rxd.kevin.Settings;
+import hu.rxd.kevin.TemporalyFailure;
 
 public class KodiApiClient {
 
   private static KodiApiClient instance;
 
-  Logger LOG = LoggerFactory.getLogger(PrometheusApiClient.class);
+  Logger LOG = LoggerFactory.getLogger(KodiApiClient.class);
 
   private final WebTarget webTarget;
 

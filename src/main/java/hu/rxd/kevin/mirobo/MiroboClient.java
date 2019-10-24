@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin.mirobo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import hu.rxd.kevin.TemporalyFailure;
 import hu.rxd.kevin.slack.SlackUtils;
 
 public class MiroboClient {

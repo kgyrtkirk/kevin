@@ -1,5 +1,5 @@
 
-package kevin;
+package hu.rxd.kevin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,14 +7,19 @@ import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
+import hu.rxd.kevin.mirobo.MiroboClient;
+import hu.rxd.kevin.mqtt.KMqttService;
+import hu.rxd.kevin.prometheus.PromMetricsServer;
+import hu.rxd.kevin.prometheus.PrometheusApiClient;
+import hu.rxd.kevin.prometheus.PrometheusApiClient.PMetric;
 import hu.rxd.kevin.slack.SlackUtils;
-import kevin.PrometheusApiClient.PMetric;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 

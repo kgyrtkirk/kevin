@@ -1,15 +1,15 @@
 package hu.rxd.kevin.slack;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import kevin.Settings;
+import java.io.IOException;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import hu.rxd.kevin.Settings;
 
 // nice tutorial at: https://www.woolha.com/tutorials/java-sending-message-to-slack-webhook
 
