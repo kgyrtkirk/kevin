@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
+import hu.rxd.kevin.alexa.mira.MiraCommand;
 import hu.rxd.kevin.mirobo.MiroboClient;
 import hu.rxd.kevin.mqtt.KMqttService;
 import hu.rxd.kevin.prometheus.PromMetricsServer;
@@ -98,6 +99,10 @@ public class Mx implements Callable<Void> {
         SlackUtils.sendMessage("Initiating cleanup...");
         startMirobo();
       }
+      if (nightClean()) {
+        SlackUtils.sendMessage("Nightshift!");
+        startNightClean();
+      }
       if (interruptClean()) {
         SlackUtils.sendMessage("Cleanup interrupted; going home");
         sendMiroboHome();
@@ -105,6 +110,12 @@ public class Mx implements Callable<Void> {
     } catch (TemporalyFailure e) {
       LOG.info("temporaly problem", e);
     }
+  }
+
+  private boolean nightClean() throws TemporalyFailure {
+    return conditionMet(isNightShift(), "nightshift") &&
+        conditionMet(nightCleanedSomeTimeAgo(), "lastNightClean") &&
+        conditionMet(someoneHome(), "someoneHome");
   }
 
   private boolean needClean() throws TemporalyFailure {
@@ -140,6 +151,19 @@ public class Mx implements Callable<Void> {
     return dSec > c;
   }
 
+  private boolean nightCleanedSomeTimeAgo() throws TemporalyFailure {
+    Date cd = lastNightCleanDate();
+    long tNow = new Date().getTime();
+    long tClean = cd.getTime();
+
+    long dSec = (tNow - tClean) / 1000;
+
+    long c = Settings.instance().getCleanInterval();
+    LOG.debug("last night cleaned: {} seconds ago", dSec);
+
+    return dSec > c;
+  }
+
   private boolean conditionMet(boolean c, String string) {
     if (!c) {
       LOG.debug("condition not met for " + string);
@@ -153,10 +177,32 @@ public class Mx implements Callable<Void> {
     return (h >= 8 && h < 20);
   }
 
+  private boolean isNightShift() {
+    Date d = new Date();
+    int h = d.getHours();
+    return (h >= 2 && h < 3);
+  }
+
   @Deprecated
   private void startMirobo() throws Exception {
     LOG.info("startClean");
     mqttService.publishCleanTime(new Date().getTime());
+    //  FIXME:  MiroboClient.mirobo("fanspeed", "70");
+    MiroboClient.mirobo("fanspeed", "75");
+    int rc = MiroboClient.mirobo("start");
+    if (rc != 0) {
+      LOG.error("mirobo return code: " + rc);
+    }
+  }
+
+  @Deprecated
+  private void startNightClean() throws Exception
+
+  {
+    LOG.info("nightClean");
+    MiroboClient.mirobo("fanspeed", "38");
+    new MiraCommand().execute("mirobo_hall");
+    mqttService.publishNightCleanTime(new Date().getTime());
     //  FIXME:  MiroboClient.mirobo("fanspeed", "70");
     int rc = MiroboClient.mirobo("start");
     if (rc != 0) {
@@ -189,6 +235,20 @@ public class Mx implements Callable<Void> {
     return res.size() > 0;
   }
 
+  private boolean someoneHome() throws TemporalyFailure {
+    Settings s = Settings.instance();
+    PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress(), false);
+
+    String interestingMacsPattern = "mac=~\"(" + Joiner.on("|").join(s.getPhoneMacs()) + ")\"";
+
+    String query = "absent(absent(count_over_time(wifi_station_signal_dbm{MACS}[10m])))";
+
+    query = query.replaceAll("MACS", interestingMacsPattern);
+
+    List<PMetric> res = promClient.doQuery(query);
+    return res.size() > 0;
+  }
+
   private boolean presenceTransitionToAtHome() throws TemporalyFailure {
     Settings s = Settings.instance();
     PrometheusApiClient promClient = new PrometheusApiClient(s.getPrometheusAddress(), false);
@@ -207,6 +267,15 @@ public class Mx implements Callable<Void> {
 
   private Date lastCleanDate() throws TemporalyFailure {
     Long ts = mqttService.state.mirobo.lastCleanTime;
+    if (ts == null) {
+      throw new TemporalyFailure("lastCleanTime is not available");
+    }
+    return new Date(ts);
+
+  }
+
+  private Date lastNightCleanDate() throws TemporalyFailure {
+    Long ts = mqttService.state.mirobo.lastNightCleanTime;
     if (ts == null) {
       throw new TemporalyFailure("lastCleanTime is not available");
     }

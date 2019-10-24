@@ -45,6 +45,7 @@ public class KMqttService implements AutoCloseable {
 
   public static class MiRoboState {
     public Long lastCleanTime = 0l;
+    public Long lastNightCleanTime = 0l;
   }
 
   public MqttState state = new MqttState();
@@ -60,6 +61,14 @@ public class KMqttService implements AutoCloseable {
         try {
           long ts = Long.parseLong(new String(message.getPayload()));
           state.mirobo.lastCleanTime = ts;
+        } catch (NumberFormatException nfe) {
+          error("malformed mirobo/lastClean value");
+        }
+        break;
+      case "mirobo/lastNightClean":
+        try {
+          long ts = Long.parseLong(new String(message.getPayload()));
+          state.mirobo.lastNightCleanTime = ts;
         } catch (NumberFormatException nfe) {
           error("malformed mirobo/lastClean value");
         }
@@ -96,6 +105,13 @@ public class KMqttService implements AutoCloseable {
     msg.setRetained(true);
     msg.setQos(1);
     mqtt.publish("mirobo/lastClean", msg);
+  }
+
+  public void publishNightCleanTime(long time) throws MqttException {
+    MqttMessage msg = new MqttMessage(Long.toString(time).getBytes());
+    msg.setRetained(true);
+    msg.setQos(1);
+    mqtt.publish("mirobo/lastNightClean", msg);
   }
 
 }
