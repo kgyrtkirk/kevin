@@ -22,7 +22,9 @@ public class MiraIntentHandler implements RequestHandler {
   @Override
   public boolean canHandle(HandlerInput input) {
 
+    System.out.println("canHandle: XXX");
     for (String a : miraCmd.getActions()) {
+      System.out.println("canHandle: " + a);
       if (input.matches(intentName(a))) {
         return true;
       }
