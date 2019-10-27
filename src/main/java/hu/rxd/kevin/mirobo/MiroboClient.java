@@ -27,7 +27,7 @@ public class MiroboClient {
 
       int exitCode = CmdExecutor.executeCommandLine(args.toArray(new String[0]), MIROBO_TIMEOUT);
       if (exitCode != 0) {
-        SlackUtils.sendMessage("mirobo " + string + " exitcode:" + exitCode);
+        SlackUtils.sendMessage("mirobo " + Arrays.toString(string) + " exitcode:" + exitCode);
       }
       return exitCode;
     } catch (TimeoutException te) {
