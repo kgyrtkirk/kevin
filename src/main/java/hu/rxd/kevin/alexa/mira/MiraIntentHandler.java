@@ -37,7 +37,7 @@ public class MiraIntentHandler implements RequestHandler {
     String speechText = " \n";
     RequestHelper h = RequestHelper.forHandlerInput(input);
     String intentName = h.getIntentName();
-    if (miraCmd.getActions().contains(intentName)) {
+    if (!miraCmd.getActions().contains(intentName)) {
       speechText = "intent " + intentName + " is unknown";
     } else {
       try {
