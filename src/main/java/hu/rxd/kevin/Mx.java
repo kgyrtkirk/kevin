@@ -103,12 +103,34 @@ public class Mx implements Callable<Void> {
         SlackUtils.sendMessage("Nightshift!");
         startNightClean();
       }
+      changeMiraSoundLevel();
       if (interruptClean()) {
         SlackUtils.sendMessage("Cleanup interrupted; going home");
         sendMiroboHome();
       }
     } catch (TemporalyFailure e) {
+      // FIXME send to slack?
+      SlackUtils.sendMessage("temporary problem:" + e.getMessage());
       LOG.info("temporaly problem", e);
+    }
+  }
+
+  Boolean miraSoundState = null;
+
+  private void changeMiraSoundLevel() throws TemporalyFailure {
+    boolean newSoundState = isDayTime();
+    if (newSoundState == miraSoundState) {
+      return;
+    }
+    try {
+      if (newSoundState) {
+        MiroboClient.mirobo("volume", "90");
+      } else {
+        MiroboClient.mirobo("volume", "50");
+      }
+      miraSoundState = newSoundState;
+    } catch (IOException | InterruptedException e) {
+      throw new TemporalyFailure("Exception during volume", e);
     }
   }
 
