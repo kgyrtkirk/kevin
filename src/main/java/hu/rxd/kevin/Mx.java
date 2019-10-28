@@ -119,7 +119,7 @@ public class Mx implements Callable<Void> {
 
   private void changeMiraSoundLevel() throws TemporalyFailure {
     boolean newSoundState = isDayTime();
-    if (newSoundState == miraSoundState) {
+    if (miraSoundState != null && miraSoundState == newSoundState) {
       return;
     }
     try {
