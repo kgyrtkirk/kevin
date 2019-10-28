@@ -124,9 +124,9 @@ public class Mx implements Callable<Void> {
     }
     try {
       if (newSoundState) {
-        MiroboClient.mirobo("volume", "90");
+        MiroboClient.mirobo("sound", "90");
       } else {
-        MiroboClient.mirobo("volume", "50");
+        MiroboClient.mirobo("sound", "50");
       }
       miraSoundState = newSoundState;
     } catch (IOException | InterruptedException e) {
