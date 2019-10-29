@@ -31,7 +31,9 @@ public class KMqttService implements AutoCloseable {
     mqtt.connect(options);
     mqtt.setTimeToWait(1000);
 
-    mqtt.subscribe("mirobo/#", new Listener());
+    Listener messageListener = new Listener();
+    mqtt.subscribe("mirobo/#", messageListener);
+    mqtt.subscribe("kevin/#", messageListener);
 
 
     //    mqtt.disconnect(10000);
@@ -41,6 +43,11 @@ public class KMqttService implements AutoCloseable {
   
   public static class MqttState {
     public MiRoboState mirobo = new MiRoboState();
+    public KevinState kevin = new KevinState();
+  }
+
+  public static class KevinState {
+    public boolean nightShift = true;
   }
 
   public static class MiRoboState {
@@ -57,6 +64,15 @@ public class KMqttService implements AutoCloseable {
 
       debug(new String(message.getPayload()));
       switch (topic) {
+      case "kevin/nightShift":
+        try {
+          long ts = Long.parseLong(new String(message.getPayload()));
+          state.kevin.nightShift = ts != 0;
+          LOG.info("nightShift: {}", state.kevin.nightShift);
+        } catch (NumberFormatException nfe) {
+          error("malformed " + topic + " value");
+        }
+        break;
       case "mirobo/lastClean":
         try {
           long ts = Long.parseLong(new String(message.getPayload()));

@@ -135,7 +135,8 @@ public class Mx implements Callable<Void> {
   }
 
   private boolean nightClean() throws TemporalyFailure {
-    return conditionMet(isNightShift(), "nightshift") &&
+    return conditionMet(mqttService.state.kevin.nightShift, "kevin/nightShift is enabled") &&
+        conditionMet(isNightShift(), "nightshift") &&
         conditionMet(nightCleanedSomeTimeAgo(), "lastNightClean") &&
         conditionMet(someoneHome(), "someoneHome");
   }
