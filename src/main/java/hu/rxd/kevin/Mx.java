@@ -124,6 +124,7 @@ public class Mx implements Callable<Void> {
     }
     try {
       if (newSoundState) {
+        MiroboClient.mirobo("fanspeed", "75");
         MiroboClient.mirobo("sound", "90");
       } else {
         MiroboClient.mirobo("sound", "50");
