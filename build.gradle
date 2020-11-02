@@ -19,6 +19,11 @@ repositories { mavenCentral() }
 mainClassName='hu.rxd.kevin.Mx'
 
 dependencies{
+
+// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
+compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.3'
+
+//implementation 'org.glassfish.jaxb:jaxb-runtime'
   compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 
 
