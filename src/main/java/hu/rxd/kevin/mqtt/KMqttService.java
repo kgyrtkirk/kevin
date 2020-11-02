@@ -48,6 +48,7 @@ public class KMqttService implements AutoCloseable {
 
   public static class KevinState {
     public boolean nightShift = true;
+    public boolean dayShift = true;
   }
 
   public static class MiRoboState {
@@ -69,6 +70,15 @@ public class KMqttService implements AutoCloseable {
           long ts = Long.parseLong(new String(message.getPayload()));
           state.kevin.nightShift = ts != 0;
           LOG.info("nightShift: {}", state.kevin.nightShift);
+        } catch (NumberFormatException nfe) {
+          error("malformed " + topic + " value");
+        }
+        break;
+      case "kevin/dayShift":
+        try {
+          long ts = Long.parseLong(new String(message.getPayload()));
+          state.kevin.dayShift = ts != 0;
+          LOG.info("dayShift: {}", state.kevin.nightShift);
         } catch (NumberFormatException nfe) {
           error("malformed " + topic + " value");
         }
