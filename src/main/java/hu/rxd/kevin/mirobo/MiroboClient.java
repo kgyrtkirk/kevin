@@ -37,6 +37,25 @@ public class MiroboClient {
     throw new RuntimeException("???");
   }
 
+  public static int status() throws IOException, InterruptedException {
+    try {
+      wakeCommand();
+      ArrayList<String> args = new ArrayList<>();
+      args.add("mirobo");
+      args.add("status");
+
+      int exitCode = CmdExecutor.executeCommandLine(args.toArray(new String[0]), MIROBO_TIMEOUT);
+      if (exitCode != 0) {
+        SlackUtils.sendMessage((args) + " exitcode:" + exitCode);
+      }
+      return exitCode;
+    } catch (TimeoutException te) {
+      LOG.error("timeout", te);
+      new TemporalyFailure("mirobo timed out");
+    }
+    throw new RuntimeException("???");
+  }
+
   private static void wakeCommand() throws IOException, InterruptedException {
     try {
       CmdExecutor.executeCommandLine(new String[] { "mirobo", "consumables" }, MIROBO_TIMEOUT);

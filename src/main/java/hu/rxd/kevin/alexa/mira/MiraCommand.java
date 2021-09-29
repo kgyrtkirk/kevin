@@ -67,7 +67,7 @@ public class MiraCommand {
     @Override
     public void run() {
       try {
-        MiroboClient.mirobo("zoned-clean", cz.zone);
+        MiroboClient.mirobo(cz.args.toArray((String[]) null));
       } catch (IOException | InterruptedException e) {
         throw new RuntimeException(e);
       }

@@ -108,12 +108,20 @@ public class Mx implements Callable<Void> {
         SlackUtils.sendMessage("Cleanup interrupted; going home");
         sendMiroboHome();
       }
+
+      //      updateMiroboState();
+
     } catch (TemporalyFailure e) {
       // FIXME send to slack?
       SlackUtils.sendMessage("temporary problem:" + e.getMessage());
       LOG.info("temporaly problem", e);
     }
   }
+
+  //  private void updateMiroboState() {
+  //    sttus = MiroboClient.mirobo("status");
+  //
+  //  }
 
   Boolean miraSoundState = null;
 

@@ -1,6 +1,7 @@
 package hu.rxd.kevin;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ public class Settings {
 
   public static class CleanZone {
     public String name;
-    public String zone;
+    public List<String> args;
   }
 
   private static class DataClass {
