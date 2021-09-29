@@ -144,6 +144,7 @@ public class Mx implements Callable<Void> {
 
   private boolean needClean() throws TemporalyFailure {
     return conditionMet(isDayTime(), "dayTime") && conditionMet(cleanedSomeTimeAgo(), "lastClean")
+        && conditionMet(mqttService.state.kevin.dayShift, "kevin/dayShift is enabled")
         && conditionMet(everyoneIsAway(), "away") && true;
   }
 
