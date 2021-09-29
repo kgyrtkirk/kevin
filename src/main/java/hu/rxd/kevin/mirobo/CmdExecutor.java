@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
@@ -17,9 +18,10 @@ import hu.rxd.kevin.Settings;
 
 public class CmdExecutor {
 
-  static class StreamGobbler implements Runnable {
+  static class StreamGobbler implements Runnable, Consumer<String> {
     private InputStream inputStream;
     private Consumer<String> consumeInputLine;
+    private List<String> lines;
 
     public StreamGobbler(InputStream inputStream, Consumer<String> consumeInputLine) {
       this.inputStream = inputStream;
@@ -28,11 +30,22 @@ public class CmdExecutor {
 
     @Override
     public void run() {
-      new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumeInputLine);
+      new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(this);
+    }
+
+    @Override
+    public void accept(String t) {
+      lines.add(t);
+      consumeInputLine.accept(t);
     }
   }
 
   public static int executeCommandLine(final String[] commandLine, final long timeout)
+      throws IOException, InterruptedException, TimeoutException {
+    return executeCommandLine2(commandLine, timeout).exit;
+  }
+
+  public static ExecResult executeCommandLine2(final String[] commandLine, final long timeout)
       throws IOException, InterruptedException, TimeoutException {
 
 
@@ -53,7 +66,7 @@ public class CmdExecutor {
       worker.join(timeout);
       if (worker.exit != null) {
         logger.info("exit code: " + worker.exit);
-        return worker.exit;
+        return new ExecResult(worker.exit, outputGobbler.lines, errorGobbler.lines);
       } else {
         throw new TimeoutException("After " + timeout + "ms command: " + Joiner.on(" ").join(commandLine));
       }
@@ -64,6 +77,21 @@ public class CmdExecutor {
     } finally {
       process.destroyForcibly();
     }
+  }
+
+  public static class ExecResult {
+
+    private int exit;
+    private List<String> stdout;
+    private List<String> stderr;
+
+    public ExecResult(int exit, List<String> stdout, List<String> stderr) {
+      this.exit = exit;
+      this.stdout = stdout;
+      this.stderr = stderr;
+
+    }
+
   }
 
   private static class Worker extends Thread {
