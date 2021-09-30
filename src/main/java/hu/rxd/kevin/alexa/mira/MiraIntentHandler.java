@@ -42,6 +42,8 @@ public class MiraIntentHandler implements RequestHandler {
     } else {
       try {
         miraCmd.execute(intentName);
+        return input.getResponseBuilder().withShouldEndSession(true)
+            .withSpeech(MiraSkillServlet.randomLine("Executing!", "Aye-Aye!", "Confirmed!", "Roger that!")).build();
       } catch (Exception e) {
         if (e instanceof TimeoutException) {
           speechText = "A timeout exception occured";

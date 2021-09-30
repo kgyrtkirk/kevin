@@ -5,6 +5,7 @@ import static com.amazon.ask.request.Predicates.requestType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import com.amazon.ask.Skill;
 import com.amazon.ask.Skills;
@@ -143,7 +144,14 @@ public class MiraSkillServlet extends SkillServlet {
 
     @Override
     public Optional<Response> handle(HandlerInput input) {
-      String speechText = "I speak on behalf of Mira";
+      String speechText = randomLine(
+            "I speak on behalf of Blanka",
+            "Motorized cleaning services!",
+            "Want something cleaned?",
+            "Where is the dust?",
+            "I'm here to clean!"
+          );
+
       MiroboClient.asyncWake();
       return input.getResponseBuilder()
           .withSpeech(speechText)
@@ -165,6 +173,11 @@ public class MiraSkillServlet extends SkillServlet {
           .withSpeech("ended but why?")
           .build();
     }
+  }
+
+  public static String randomLine(String... strings) {
+    Random rnd = new Random();
+    return strings[rnd.nextInt(strings.length)];
   }
 
 }
