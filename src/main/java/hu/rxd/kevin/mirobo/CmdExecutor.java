@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -21,7 +22,7 @@ public class CmdExecutor {
   static class StreamGobbler implements Runnable, Consumer<String> {
     private InputStream inputStream;
     private Consumer<String> consumeInputLine;
-    private List<String> lines;
+    private List<String> lines = new ArrayList<String>();
 
     public StreamGobbler(InputStream inputStream, Consumer<String> consumeInputLine) {
       this.inputStream = inputStream;
@@ -42,7 +43,7 @@ public class CmdExecutor {
 
   public static int executeCommandLine(final String[] commandLine, final long timeout)
       throws IOException, InterruptedException, TimeoutException {
-    return executeCommandLine2(commandLine, timeout).exit;
+    return executeCommandLine2(commandLine, timeout).exitCode;
   }
 
   public static ExecResult executeCommandLine2(final String[] commandLine, final long timeout)
@@ -81,12 +82,12 @@ public class CmdExecutor {
 
   public static class ExecResult {
 
-    private int exit;
-    private List<String> stdout;
-    private List<String> stderr;
+    public final int exitCode;
+    public final List<String> stdout;
+    public final List<String> stderr;
 
     public ExecResult(int exit, List<String> stdout, List<String> stderr) {
-      this.exit = exit;
+      this.exitCode = exit;
       this.stdout = stdout;
       this.stderr = stderr;
 
