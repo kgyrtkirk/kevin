@@ -4,8 +4,12 @@ package hu.rxd.kevin.mirobo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +62,58 @@ public class MiroboClient {
     throw new RuntimeException("???");
   }
 
-  public static class MiRoboStatus {
+  static enum StateKey {
+    // @formatter:off
+    State("State"),
+    Battery("Battery"),
+    Fanspeed("Fanspeed"),
+    CleaningSince("Cleaning since"),
+    CleanedArea("Cleaned area"),
+    Waterbox("Water box attached"),
+    Mop("Mop attached");
+    // @formatter:on
 
-    public MiRoboStatus(List<String> stdout) {
-      throw new RuntimeException("Unimplemented!");
+
+    private String str;
+
+    StateKey(String str) {
+      this.str = str;
+
     }
 
+    public static StateKey fromString(String str) {
+      for (StateKey e : values()) {
+        if (e.str.equals(str)) {
+          return e;
+        }
+      }
+      throw new IllegalArgumentException("unknown:" + str);
+    }
+  }
+
+  public static class MiRoboStatus {
+
+    private Map<StateKey, String> vals;
+
+    // [State: Charging, Battery: 80 %,
+    // Fanspeed: 102 %,
+    // Cleaning since: 0:42:40,
+    // Cleaned area: 36.855 m²,
+    // Water box attached: True,
+    // Mop attached: True]
+
+    public MiRoboStatus(List<String> stdout) {
+      Pattern pat = Pattern.compile("([^:]+): +([^ ]+).*");
+      vals = new HashMap<>();
+      for (String line : stdout) {
+        Matcher m = pat.matcher(line);
+        if (!m.matches()) {
+          throw new RuntimeException("Not able to process statusline: " + line);
+        }
+        StateKey l = StateKey.fromString(m.group(1));
+        vals.put(l, m.group(2));
+      }
+    }
   }
 
   private static void wakeCommand() throws IOException, InterruptedException {
