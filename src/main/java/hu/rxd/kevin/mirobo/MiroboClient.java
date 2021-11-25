@@ -64,13 +64,15 @@ public class MiroboClient {
 
   static enum StateKey {
     // @formatter:off
+    Error("Error"),
     State("State"),
     Battery("Battery"),
     Fanspeed("Fanspeed"),
     CleaningSince("Cleaning since"),
     CleanedArea("Cleaned area"),
     Waterbox("Water box attached"),
-    Mop("Mop attached");
+    Mop("Mop attached"),
+    WATER_LOW("Water is running low!");
     // @formatter:on
 
 
@@ -105,14 +107,25 @@ public class MiroboClient {
     public MiRoboStatus(List<String> stdout) {
       Pattern pat = Pattern.compile("([^:]+): +([^ ]+).*");
       vals = new HashMap<>();
+      vals.put(StateKey.WATER_LOW, "0");
       for (String line : stdout) {
         Matcher m = pat.matcher(line);
-        if (!m.matches()) {
-          throw new RuntimeException("Not able to process statusline: " + line);
+        if (m.matches()) {
+          StateKey l = StateKey.fromString(m.group(1));
+          vals.put(l, m.group(2));
+          continue;
         }
-        StateKey l = StateKey.fromString(m.group(1));
-        vals.put(l, m.group(2));
+        if (StateKey.WATER_LOW.str.equals(line)) {
+          vals.put(StateKey.WATER_LOW, "1");
+          continue;
+        }
+        throw new RuntimeException("Not able to process statusline: " + line);
       }
+    }
+
+    @Override
+    public String toString() {
+      return vals.toString();
     }
   }
 

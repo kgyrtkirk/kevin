@@ -16,6 +16,7 @@ import com.google.common.base.Joiner;
 
 import hu.rxd.kevin.alexa.mira.MiraCommand;
 import hu.rxd.kevin.mirobo.MiroboClient;
+import hu.rxd.kevin.mirobo.MiroboClient.MiRoboStatus;
 import hu.rxd.kevin.mqtt.KMqttService;
 import hu.rxd.kevin.prometheus.PromMetricsServer;
 import hu.rxd.kevin.prometheus.PrometheusApiClient;
@@ -41,6 +42,8 @@ public class Mx implements Callable<Void> {
 
   private KMqttService mqttService;
 
+  private PromMetricsServer promMetricsServer;
+
   static Logger LOG = LoggerFactory.getLogger(Mx.class);
 
   public static void main(String[] args) throws Exception {
@@ -53,6 +56,7 @@ public class Mx implements Callable<Void> {
     try (KMqttService mqttService1 = new KMqttService()) {
       //FIXME
       mqttService = mqttService1;
+      promMetricsServer = new PromMetricsServer(prometheusPort);
 
       if (runChecks) {
         MiroboClient.mirobo("find");
@@ -70,7 +74,6 @@ public class Mx implements Callable<Void> {
   }
 
   private void runLoop() throws Exception {
-    PromMetricsServer promMetricsServer = new PromMetricsServer(prometheusPort);
     try {
       SlackUtils.sendMessage("kevin launched..");
       while (true) {
@@ -81,7 +84,7 @@ public class Mx implements Callable<Void> {
     } catch (Exception e) {
       SlackUtils.sendMessage("<!channel> Encountered exception: " + exceptionStacktraceToString(e));
     } finally {
-      SlackUtils.sendMessage("<!here> shutting down?!");
+      SlackUtils.sendMessage("<!here> shutting down!");
     }
   }
 
@@ -109,7 +112,7 @@ public class Mx implements Callable<Void> {
         sendMiroboHome();
       }
 
-      //      updateMiroboState();
+      updateMiroboState();
 
     } catch (TemporalyFailure e) {
       // FIXME send to slack?
@@ -118,10 +121,11 @@ public class Mx implements Callable<Void> {
     }
   }
 
-  //  private void updateMiroboState() {
-  //    sttus = MiroboClient.mirobo("status");
-  //
-  //  }
+  private void updateMiroboState() throws Exception {
+    MiRoboStatus status = MiroboClient.status();
+
+    promMetricsServer.pushValues(status);
+  }
 
   Boolean miraSoundState = null;
 
