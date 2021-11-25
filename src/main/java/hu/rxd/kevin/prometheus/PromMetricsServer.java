@@ -50,10 +50,6 @@ public class PromMetricsServer {
     waterLow.set(Double.valueOf(vals.get(StateKey.WATER_LOW)));
     setLabelMetric(state, vals.get(StateKey.State));
 
-    loops.inc();
-    loops.inc();
-
-
   }
 
 
