@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import hu.rxd.kevin.mirobo.MiroboClient;
 import hu.rxd.kevin.mirobo.MiroboClient.MiRoboStatus;
+import hu.rxd.kevin.prometheus.PromMetricsServer;
 
 public class Test1 {
   @Test
@@ -29,6 +30,18 @@ public class Test1 {
 
     MiRoboStatus st = MiroboClient.status();
     System.out.println(st);
+
+    PromMetricsServer pms = new PromMetricsServer(16701);
+    pms.pushValues(st);
+
+    try {
+      Thread.sleep(100000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException();
+
+    }
+    throw new RuntimeException("Unimplemented!");
+
   }
 
 }

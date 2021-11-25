@@ -79,7 +79,7 @@ public class Mx implements Callable<Void> {
       while (true) {
         Thread.sleep(10000);
         run();
-        PromMetricsServer.loops.inc();
+        promMetricsServer.loops.inc();
       }
     } catch (Exception e) {
       SlackUtils.sendMessage("<!channel> Encountered exception: " + exceptionStacktraceToString(e));

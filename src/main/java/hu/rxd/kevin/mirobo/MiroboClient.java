@@ -62,7 +62,7 @@ public class MiroboClient {
     throw new RuntimeException("???");
   }
 
-  static enum StateKey {
+  public static enum StateKey {
     // @formatter:off
     Error("Error"),
     State("State"),
@@ -121,6 +121,10 @@ public class MiroboClient {
         }
         throw new RuntimeException("Not able to process statusline: " + line);
       }
+    }
+
+    public Map<StateKey, String> getVals() {
+      return vals;
     }
 
     @Override
