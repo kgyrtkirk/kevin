@@ -82,6 +82,7 @@ public class Mx implements Callable<Void> {
         promMetricsServer.loops.inc();
       }
     } catch (Exception e) {
+      LOG.error("Encountered exception in mainloop", e);
       SlackUtils.sendMessage("<!channel> Encountered exception: " + exceptionStacktraceToString(e));
     } finally {
       SlackUtils.sendMessage("<!here> shutting down!");

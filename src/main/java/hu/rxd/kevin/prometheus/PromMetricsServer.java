@@ -45,6 +45,14 @@ public class PromMetricsServer {
 
     Map<StateKey, String> vals = status.getVals();
 
+    if (vals.get(StateKey.State) == null) {
+      setLabelMetric(errorMetric, "invalid status");
+      battery.clear();
+      waterLow.clear();
+      setLabelMetric(state, "UNKNOWN");
+      return;
+    }
+
     setLabelMetric(errorMetric, vals.get(StateKey.Error));
     battery.set(Double.valueOf(vals.get(StateKey.Battery)));
     waterLow.set(Double.valueOf(vals.get(StateKey.WATER_LOW)));

@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import hu.rxd.kevin.mirobo.MiroboClient;
 import hu.rxd.kevin.mirobo.MiroboClient.MiRoboStatus;
+import hu.rxd.kevin.mirobo.MiroboClient.StateKey;
 import hu.rxd.kevin.prometheus.PromMetricsServer;
 
 public class Test1 {
@@ -32,6 +33,7 @@ public class Test1 {
     System.out.println(st);
 
     PromMetricsServer pms = new PromMetricsServer(16701);
+    st.getVals().put(StateKey.State, null);
     pms.pushValues(st);
 
     try {
